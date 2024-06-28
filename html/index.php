@@ -22,8 +22,8 @@ try {
 
         // データの挿入
         $insertDataSql = "INSERT INTO users (name, email) VALUES 
-            ('石井 たつや', '石井@example.com'),
-            ('斎藤 ゆうき', '斎藤@example.com')";
+            ('本条 めぐみ', '本条@example.com'),
+            ('柳田 たいし', '柳田@example.com')";
         $pdo->exec($insertDataSql);
         echo "Data inserted successfully!<br>";
         
