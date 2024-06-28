@@ -20,7 +20,12 @@ try {
         $pdo->exec($createTableSql);
         echo "Table 'users' created successfully!<br>";
 
-       
+        // データの挿入
+        $insertDataSql = "INSERT INTO users (name, email) VALUES 
+            ('倉石 Doe', '倉石@rrr.com'),
+            ('白石 Smith', '白石@bbb.com')";
+        $pdo->exec($insertDataSql);
+        echo "Data inserted successfully!<br>";
         
         // データの取得と表示
         $stmt = $pdo->query("SELECT * FROM users");
