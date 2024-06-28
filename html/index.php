@@ -10,6 +10,23 @@ try {
     $pdo = new PDO($dsn);
     if ($pdo) {
         echo "接続できた力斗さん(環境変数もばっちり)<br>";
+        
+        // テーブルの作成
+        $createTableSql = "CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) UNIQUE NOT NULL
+        )";
+        $pdo->exec($createTableSql);
+        echo "Table 'users' created successfully!<br>";
+
+        // データの挿入
+        $insertDataSql = "INSERT INTO users (name, email) VALUES 
+            ('石井 たつや', '石井@example.com'),
+            ('斎藤 ゆうき', '斎藤@example.com')";
+        $pdo->exec($insertDataSql);
+        echo "Data inserted successfully!<br>";
+        
         // データの取得と表示
         $stmt = $pdo->query("SELECT * FROM users");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
