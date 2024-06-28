@@ -20,7 +20,7 @@ try {
         $pdo->exec($createTableSql);
         echo "Table 'users' created successfully!<br>";
 
-        
+       
         
         // データの取得と表示
         $stmt = $pdo->query("SELECT * FROM users");
