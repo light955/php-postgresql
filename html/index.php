@@ -11,7 +11,7 @@ try {
     if ($pdo) {
         echo "接続できた力斗さん(環境変数もばっちり)<br>";
         
-        // テーブルの作成
+        // テーブルが存在しない場合に作成
         $createTableSql = "CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
@@ -20,13 +20,18 @@ try {
         $pdo->exec($createTableSql);
         echo "Table 'users' created successfully!<br>";
 
-        // データの挿入
-        $insertDataSql = "INSERT INTO users (name, email) VALUES 
-            ('倉石 Doe', '倉石@rrr.com'),
-            ('白石 Smith', '白石@bbb.com')";
-        $pdo->exec($insertDataSql);
-        echo "Data inserted successfully!<br>";
-        
+        // テーブルが空の場合にのみデータを挿入
+        $checkTableSql = "SELECT COUNT(*) as count FROM users";
+        $stmt = $pdo->query($checkTableSql);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row['count'] == 0) {
+            $insertDataSql = "INSERT INTO users (name, email) VALUES 
+                ('John Doe', 'john.doe@example.com'),
+                ('Jane Smith', 'jane.smith@example.com')";
+            $pdo->exec($insertDataSql);
+            echo "Data inserted successfully!<br>";
+        }
+
         // データの取得と表示
         $stmt = $pdo->query("SELECT * FROM users");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
