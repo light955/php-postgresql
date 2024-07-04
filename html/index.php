@@ -9,7 +9,7 @@ $dsn = "pgsql:host=$host;port=$port;dbname=$db;user=$user;password=$pass";
 try {
     $pdo = new PDO($dsn);
     if ($pdo) {
-        echo "接続できた力斗さん(環境変数もばっちり)<br>";
+        echo "久しぶりの接続できた力斗さん(環境変数もばっちり)<br>";
         
         // テーブルが存在しない場合に作成
         $createTableSql = "CREATE TABLE IF NOT EXISTS users (
