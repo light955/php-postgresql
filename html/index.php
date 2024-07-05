@@ -1,44 +1,31 @@
 <?php
-$host = getenv('DB_HOST') ?: 'db';  // 環境変数からDBホスト名を取得。デフォルトは'db'
-$db   = getenv('DB_NAME') ?: 'mydatabase';
-$user = getenv('DB_USER') ?: 'user';
-$pass = getenv('DB_PASS') ?: 'password';
-$port = getenv('DB_PORT') ?: "5432";
+require 'db.php'; // データベース接続を確立
 
-$dsn = "pgsql:host=$host;port=$port;dbname=$db;user=$user;password=$pass";
 try {
-    $pdo = new PDO($dsn);
-    if ($pdo) {
-        echo "久しぶりの接続できた力斗さん(環境変数もばっちり)<br>";
-        
-        // テーブルが存在しない場合に作成
-        $createTableSql = "CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(100) UNIQUE NOT NULL
-        )";
-        $pdo->exec($createTableSql);
-        echo "Table 'users' created successfully!<br>";
-
-        // テーブルが空の場合にのみデータを挿入
-        $checkTableSql = "SELECT COUNT(*) as count FROM users";
-        $stmt = $pdo->query($checkTableSql);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row['count'] == 0) {
-            $insertDataSql = "INSERT INTO users (name, email) VALUES 
-                ('John Doe', 'john.doe@example.com'),
-                ('Jane Smith', 'jane.smith@example.com')";
-            $pdo->exec($insertDataSql);
-            echo "Data inserted successfully!<br>";
-        }
-
-        // データの取得と表示
-        $stmt = $pdo->query("SELECT * FROM users");
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            echo "ID: " . $row['id'] . " Name: " . $row['name'] . " Email: " . $row['email'] . "<br>";
-        }
-    }
+    $sql = "SELECT posts.*, users.name AS user_name FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC";
+    $stmt = $pdo->query($sql);
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    echo "Database connection failed: " . $e->getMessage();
+    echo "Error: " . $e->getMessage();
 }
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+</head>
+<body>
+    <h1>Posts</h1>
+    <a href="create_post.php">Create Post</a>
+    <ul>
+        <?php foreach ($posts as $post): ?>
+            <li>
+                <h2><?php echo htmlspecialchars($post['title']); ?></h2>
+                <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
+                <small>by <?php echo htmlspecialchars($post['user_name']); ?> at <?php echo htmlspecialchars($post['created_at']); ?></small>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</body>
+</html>
